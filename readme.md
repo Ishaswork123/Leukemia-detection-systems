@@ -237,9 +237,9 @@ leuko_fixed/
 | F1 Score | `TODO` |
 
 <!-- PLACEHOLDER: docs/assets/confusion_matrix.png -->
-<img src="\static\images\confusion.png" width="450"/>
+<img src="confusion.png" width="450"/>
 <!-- PLACEHOLDER: docs/assets/roc_curve.png -->
-<img src="\static\images\download.png" width="450"/>
+<img src="download.png" width="450"/>
 
 </div>
 
