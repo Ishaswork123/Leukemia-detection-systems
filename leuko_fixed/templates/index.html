@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leukemia Detection Web App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* --- Dashboard Container --- */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            color: #0066cc;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* --- Main Content --- */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Cards --- */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: #0066cc;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* --- Upload Section --- */
+        .drop-zone {
+            border: 2px dashed #0066cc;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f0f4f8;
+        }
+
+        .drop-zone:hover {
+            border-color: #0052a3;
+            background: #e6f0ff;
+        }
+
+        .drop-zone.dragover {
+            border-color: #00cc66;
+            background: #e6ffe6;
+            transform: scale(1.02);
+        }
+
+        .drop-zone__prompt {
+            font-size: 1.1rem;
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .drop-zone__input {
+            display: none;
+        }
+
+        /* --- Image Preview --- */
+        .image-preview {
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 300px;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            background: #f0f4f8;
+            color: #0066cc;
+            border: 1.5px solid #0066cc;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .secondary-btn:hover:not(:disabled) {
+            background: #0066cc;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Report Modal content styling (used inside .report-modal-body) --- */
+        .report-item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #0066cc;
+        }
+
+        .report-item label {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .report-item value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0066cc;
+            margin-top: 4px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .report-actions .btn {
+            flex: 1;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            margin-top: 0;
+        }
+
+        /* --- Results Section --- */
+        .result-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .result-box h3 {
+            font-size: 0.9rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .prediction-label {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0066cc;
+        }
+
+        .confidence-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00cc66;
+        }
+
+        .heatmap-box {
+            grid-column: 1 / -1;
+            border-left-color: #ff9900;
+        }
+
+        .heatmap-img {
+            width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        .results-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Error Alert --- */
+        .error-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .error-alert-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* --- Report Modal --- */
+        .report-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .report-modal-overlay.visible {
+            display: block;
+        }
+
+        .report-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            animation: popIn 0.3s ease;
+        }
+
+        .report-modal.visible {
+            display: block;
+        }
+
+        .report-modal-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .report-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+
+        .report-modal-body {
+            padding: 20px;
+        }
+
+        /* --- Chatbot Modal --- */
+        .chat-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .chat-modal-overlay.visible {
+            display: block;
+        }
+
+        .chat-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            animation: popIn 0.3s ease;
+        }
+
+        .chat-modal.visible {
+            display: flex;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .chat-modal-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .chat-modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .chat-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message p {
+            padding: 12px 15px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.95rem;
+            max-width: 85%;
+        }
+
+        .system-msg p {
+            background: #f0f4f8;
+            color: #666;
+        }
+
+        .user-msg {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .user-msg p {
+            background: #0066cc;
+            color: white;
+        }
+
+        .assistant-msg p {
+            background: #e6f0ff;
+            color: #0066cc;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            flex-shrink: 0;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .chat-send-btn {
+            padding: 10px 20px !important;
+            margin-top: 0 !important;
+            width: auto !important;
+            white-space: nowrap;
+        }
+
+        /* --- Chatbot Toggle Button --- */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+            transition: all 0.3s ease;
+            z-index: 998;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.6);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.95rem;
+            }
+
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .drop-zone {
+                padding: 30px 15px;
+            }
+
+            .drop-zone__prompt {
+                font-size: 0.95rem;
+            }
+
+            .report-modal {
+                width: calc(100% - 40px);
+            }
+
+            .chat-modal {
+                width: calc(100% - 40px);
+                height: 500px;
+            }
+
+            .chatbot-toggle {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+
+            .error-alert {
+                right: 20px;
+                left: 20px;
+            }
+
+            .prediction-label,
+            .confidence-value {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-header {
+                margin-bottom: 20px;
+                padding: 20px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card h2 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .result-box {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+
+            .drop-zone {
+                padding: 25px 10px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .prediction-label,
+            .confidence-value {
+                font-size: 1.3rem;
+            }
+
+            .chat-modal {
+                width: calc(100% - 20px);
+                height: 400px;
+            }
+
+            .message p {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+
+            .error-alert {
+                font-size: 0.85rem;
+                right: 10px;
+                left: 10px;
+                top: 10px;
+            }
+
+            .report-modal {
+                width: calc(100% - 20px);
+            }
+        }
+
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #0066cc;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Global error alert -->
+    <div id="error-alert" class="error-alert hidden">
+        <span id="error-alert-text"></span>
+        <button id="error-alert-close" class="error-alert-close" aria-label="Dismiss">&times;</button>
+    </div>
+
+    <!-- Report Modal Overlay -->
+    <div id="report-modal-overlay" class="report-modal-overlay"></div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="report-modal">
+        <div class="report-modal-header">
+            <h3>📄 Diagnosis Report</h3>
+            <button id="report-close-btn" class="report-modal-close" aria-label="Close report">&times;</button>
+        </div>
+        <div class="report-modal-body">
+            <div class="report-item">
+                <label>Prediction</label>
+                <value id="report-prediction">--</value>
+            </div>
+            <div class="report-item">
+                <label>Confidence</label>
+                <value id="report-confidence">--</value>
+            </div>
+            <div class="report-item">
+                <label>Abnormal Regions</label>
+                <value id="report-abnormal">--</value>
+            </div>
+            <div class="report-actions">
+                <button id="generate-pdf-btn" class="btn secondary-btn">Generate PDF</button>
+                <button id="download-pdf-btn" class="btn secondary-btn hidden">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal Overlay -->
+    <div id="chat-modal-overlay" class="chat-modal-overlay"></div>
+
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal">
+        <div class="chat-modal-header">
+            <h3>💬 Clinical Assistant</h3>
+            <button id="chat-modal-close" class="chat-modal-close" aria-label="Close chat">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message system-msg">
+                <p>Hello! I am a clinical assistant specialized in Leukemia. How can I help you understand the different types (ALL, AML, CLL, CML)?</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ask a question..." class="chat-input">
+            <button id="send-msg-btn" class="btn secondary-btn chat-send-btn">Send</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1>Leukemia Diagnostics System</h1>
+            <p>Advanced Deep Learning Analysis with Grad-CAM visualization</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Upload Section -->
+            <section class="upload-section card">
+                <h2>Image Upload</h2>
+                <div class="drop-zone" id="drop-zone">
+                    <span class="drop-zone__prompt">Drag &amp; Drop image here or click to browse</span>
+                    <input type="file" name="file" id="file-input" class="drop-zone__input" accept="image/*">
+                </div>
+
+                <!-- Image Preview -->
+                <div class="image-preview" id="image-preview-container" style="display: none;">
+                    <img id="image-preview" class="preview-img" alt="Uploaded Image Preview">
+                </div>
+
+                <button type="button" id="analyze-btn" class="btn primary-btn" disabled>Analyze Scan</button>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section card">
+                <h2>Analysis Results</h2>
+                <div id="results-empty" class="results-empty">
+                    No analysis yet. Upload an image to get started.
+                </div>
+
+                <div id="results-content" class="results-content hidden">
+                    <div class="result-box">
+                        <h3>Prediction</h3>
+                        <p id="prediction-text" class="prediction-label">--</p>
+                    </div>
+                    <div class="result-box">
+                        <h3>Confidence</h3>
+                        <p id="confidence-text" class="confidence-value">--</p>
+                    </div>
+                    <div class="result-box heatmap-box" id="heatmap-box" style="display: none;">
+                        <h3>Grad-CAM Visualization</h3>
+                        <button type="button" id="show-heatmap-btn" class="btn secondary-btn">Show Grad-CAM Heatmap</button>
+                        <img id="heatmap-image" class="heatmap-img hidden" alt="Grad-CAM Heatmap">
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Floating Chatbot Launcher -->
+    <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open clinical assistant" title="Clinical Assistant">💬</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Element refs ---
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            const analyzeBtn = document.getElementById('analyze-btn');
+
+            const resultsEmpty = document.getElementById('results-empty');
+            const resultsContent = document.getElementById('results-content');
+            const predictionText = document.getElementById('prediction-text');
+            const confidenceText = document.getElementById('confidence-text');
+            const heatmapBox = document.getElementById('heatmap-box');
+            const heatmapImage = document.getElementById('heatmap-image');
+            const showHeatmapBtn = document.getElementById('show-heatmap-btn');
+
+            const errorAlert = document.getElementById('error-alert');
+            const errorAlertText = document.getElementById('error-alert-text');
+            const errorAlertClose = document.getElementById('error-alert-close');
+
+            // Chat elements
+            const chatModalOverlay = document.getElementById('chat-modal-overlay');
+            const chatModal = document.getElementById('chat-modal');
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotClose = document.getElementById('chat-modal-close');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-msg-btn');
+
+            let currentFile = null;
+            let errorTimeout = null;
+
+            // --- Error alert helpers ---
+            function showError(message) {
+                errorAlertText.textContent = message;
+                errorAlert.classList.remove('hidden');
+                clearTimeout(errorTimeout);
+                errorTimeout = setTimeout(() => errorAlert.classList.add('hidden'), 6000);
+            }
+            errorAlertClose.addEventListener('click', () => errorAlert.classList.add('hidden'));
+            // Expose for report.js to reuse the same error banner
+            window.showError = showError;
+
+            // --- Results helpers ---
+            function clearResults() {
+                resultsContent.classList.add('hidden');
+                resultsEmpty.classList.remove('hidden');
+                predictionText.textContent = '--';
+                confidenceText.textContent = '--';
+                heatmapBox.style.display = 'none';
+                heatmapImage.classList.add('hidden');
+                heatmapImage.src = '';
+                showHeatmapBtn.classList.remove('hidden');
+
+                // Report modal state is owned by report.js
+                if (window.ReportModule) {
+                    window.ReportModule.clearPredictionData();
+                }
+            }
+
+            function renderResults(data) {
+                resultsEmpty.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+
+                let confStr = data.confidence;
+                if (!isNaN(parseFloat(data.confidence))) {
+                    confStr = (parseFloat(data.confidence) * 100).toFixed(1) + '%';
+                }
+
+                predictionText.textContent = data.prediction || 'Unknown';
+                confidenceText.textContent = confStr;
+
+                if (data.heatmap_url) {
+                    heatmapBox.style.display = 'block';
+                    heatmapImage.classList.add('hidden');
+                    showHeatmapBtn.classList.remove('hidden');
+                    showHeatmapBtn.dataset.src = data.heatmap_url + '?t=' + Date.now();
+                } else {
+                    heatmapBox.style.display = 'none';
+                }
+
+                // Hand the prediction (incl. heatmap_url) off to report.js
+                if (window.ReportModule) {
+                    window.ReportModule.setPredictionData(data);
+                } else {
+                    // Should never happen once report.js is loaded correctly,
+                    // but fail loudly instead of silently if it ever does.
+                    console.error('ReportModule not available — check that /static/js/report.js loaded without errors.');
+                }
+            }
+
+            showHeatmapBtn.addEventListener('click', () => {
+                const src = showHeatmapBtn.dataset.src;
+                if (!src) return;
+                heatmapImage.src = src;
+                heatmapImage.classList.remove('hidden');
+                showHeatmapBtn.classList.add('hidden');
+            });
+
+            // --- Upload / drop zone ---
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            function handleFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file.');
+                    return;
+                }
+                currentFile = file;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    dropZone.style.display = 'none';
+                    analyzeBtn.disabled = false;
+                    clearResults();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // --- Analyze ---
+            analyzeBtn.addEventListener('click', async () => {
+                if (!currentFile) return;
+
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = 'Analyzing...';
+                clearResults();
+
+                const formData = new FormData();
+                formData.append('file', currentFile);
+
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        let detail = 'Something went wrong. Please try again.';
+                        try {
+                            const errBody = await response.json();
+                            if (errBody && errBody.detail) detail = errBody.detail;
+                        } catch (_) { }
+
+                        clearResults();
+                        showError(detail);
+                        return;
+                    }
+
+                    const data = await response.json();
+                    renderResults(data);
+
+                } catch (error) {
+                    clearResults();
+                    showError('Network error: could not reach the server. Please try again.');
+                    console.error('Analysis error:', error);
+                } finally {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = 'Analyze Scan';
+                }
+            });
+
+            // --- Chat Modal ---
+            chatbotToggle.addEventListener('click', () => {
+                chatModal.classList.add('visible');
+                chatModalOverlay.classList.add('visible');
+                chatInput.focus();
+            });
+
+            chatbotClose.addEventListener('click', () => {
+                chatModal.classList.remove('visible');
+                chatModalOverlay.classList.remove('visible');
+            });
+
+            chatModalOverlay.addEventListener('click', () => {
+                chatModal.classList.remove('visible');
+                chatModalOverlay.classList.remove('visible');
+            });
+
+            function appendMessage(sender, text, isSystem = false) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isSystem ? 'system-msg' : (sender === 'user' ? 'user-msg' : 'assistant-msg')}`;
+
+                const contentP = document.createElement('p');
+                contentP.textContent = text;
+                msgDiv.appendChild(contentP);
+
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+
+                appendMessage('user', text);
+                chatInput.value = '';
+                chatInput.disabled = true;
+                sendBtn.disabled = true;
+
+                const loadingId = Date.now();
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'message assistant-msg';
+                loadingDiv.id = `loading-${loadingId}`;
+                loadingDiv.innerHTML = '<p>...</p>';
+                chatMessages.appendChild(loadingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: text })
+                    });
+                    const data = await response.json();
+
+                    document.getElementById(`loading-${loadingId}`)?.remove();
+
+                    if (response.ok) {
+                        appendMessage('assistant', data.response);
+                    } else {
+                        appendMessage('system', data.detail || 'Failed to get response', true);
+                    }
+                } catch (error) {
+                    document.getElementById(`loading-${loadingId}`)?.remove();
+                    appendMessage('system', 'Network error. Could not reach clinical assistant.', true);
+                } finally {
+                    chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    chatInput.focus();
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Initial state
+            clearResults();
+        });
+    
+        // static/js/report.js
+// Handles the "Diagnosis Report" modal: showing prediction summary,
+// generating a PDF via POST /report, and downloading it via GET /download-report/:id.
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Element refs (must match your HTML ids) ---
+    const reportModalOverlay = document.getElementById('report-modal-overlay');
+    const reportModal = document.getElementById('report-modal');
+    const generatePdfBtn = document.getElementById('generate-pdf-btn');
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    const reportPrediction = document.getElementById('report-prediction');
+    const reportConfidence = document.getElementById('report-confidence');
+    const reportAbnormal = document.getElementById('report-abnormal');
+
+    // Module-level state: the last prediction data received from /predict
+    let currentPredictionData = null;
+
+    
+   function openModal() {
+    reportModal?.classList.add("visible");
+    reportModalOverlay?.classList.add("visible");
+}
+
+function closeModal() {
+    reportModal?.classList.remove("visible");
+    reportModalOverlay?.classList.remove("visible");
+}
+
+    /** Called by index.html's renderResults() after a successful /predict response */
+    function setPredictionData(data) {
+        currentPredictionData = data;
+
+        // Reset report action buttons whenever a new prediction comes in
+        downloadPdfBtn.classList.add('hidden');
+        downloadPdfBtn.removeAttribute('data-report-id');
+        generatePdfBtn.classList.remove('hidden');
+        generatePdfBtn.disabled = false;
+        generatePdfBtn.textContent = 'Generate PDF';
+
+        if (!data) {
+            closeModal();
+            return;
+        }
+
+        reportPrediction.textContent = data.prediction ?? '--';
+
+        let confStr = data.confidence;
+        if (!isNaN(parseFloat(data.confidence))) {
+            confStr = (parseFloat(data.confidence) * 100).toFixed(1) + '%';
+        }
+        reportConfidence.textContent = confStr ?? '--';
+        reportAbnormal.textContent = data.abnormal_region_count ?? 0;
+
+        // Prediction + confidence are now populated -> show the modal
+        openModal();
+    }
+
+    /** Clears stored prediction data and closes the modal (call on new upload) */
+    function clearPredictionData() {
+        currentPredictionData = null;
+        closeModal();
+        downloadPdfBtn.classList.add('hidden');
+        downloadPdfBtn.removeAttribute('data-report-id');
+        generatePdfBtn.classList.remove('hidden');
+    }
+
+    /** Small helper to surface errors — reuses #error-alert if present, else alert() */
+    function showError(message) {
+        const errorAlert = document.getElementById('error-alert');
+        const errorAlertText = document.getElementById('error-alert-text');
+        if (errorAlert && errorAlertText) {
+            errorAlertText.textContent = message;
+            errorAlert.classList.remove('hidden');
+            clearTimeout(showError._t);
+            showError._t = setTimeout(() => errorAlert.classList.add('hidden'), 6000);
+        } else {
+            alert(message);
+        }
+    }
+
+    /** POST /report with the current prediction data, get back a report_id */
+    async function generateReport() {
+        if (!currentPredictionData) {
+            showError('No analysis data available. Please analyze a scan first.');
+            return;
+        }
+
+        if (!currentPredictionData.heatmap_url) {
+            showError('This scan has no Grad-CAM heatmap, so a report cannot be generated.');
+            return;
+        }
+
+        generatePdfBtn.disabled = true;
+        const originalText = generatePdfBtn.textContent;
+        generatePdfBtn.textContent = 'Generating...';
+
+        try {
+            const response = await fetch('/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(currentPredictionData)
+            });
+
+            if (!response.ok) {
+                let detail = 'Failed to generate report';
+                try {
+                    const errBody = await response.json();
+                    detail = errBody?.detail || detail;
+                } catch (_) { /* ignore parse errors */ }
+                showError(detail);
+                return;
+            }
+
+            const reportData = await response.json();
+
+            if (!reportData.report_id) {
+                showError('Report generated but no report_id was returned.');
+                return;
+            }
+
+            downloadPdfBtn.dataset.reportId = reportData.report_id;
+            downloadPdfBtn.classList.remove('hidden');
+            generatePdfBtn.classList.add('hidden');
+            showError('✅ Report generated successfully!');
+
+        } catch (error) {
+            showError('Error generating report: ' + error.message);
+            console.error('generateReport error:', error);
+        } finally {
+            generatePdfBtn.disabled = false;
+            generatePdfBtn.textContent = originalText;
+        }
+    }
+
+    /** Opens the generated PDF in a new tab via GET /download-report/:id */
+    function downloadReport() {
+        const reportId = downloadPdfBtn.dataset.reportId;
+        if (!reportId) {
+            showError('No report available to download yet.');
+            return;
+        }
+        window.open(`/download-report/${encodeURIComponent(reportId)}`, '_blank');
+    }
+
+    // --- Wire up exactly ONE listener per element (avoids duplicate-fire bugs) ---
+    if (generatePdfBtn) {
+        generatePdfBtn.addEventListener('click', generateReport);
+    }
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', downloadReport);
+    }
+    if (reportModalOverlay) {
+        reportModalOverlay.addEventListener('click', closeModal);
+    }
+    // Also allow the header "X" close button to work, if present
+    const reportCloseBtn = document.getElementById('report-close-btn');
+    if (reportCloseBtn) {
+        reportCloseBtn.addEventListener('click', closeModal);
+    }
+
+    // Expose a small public API for the rest of your app to call into
+    window.ReportModule = {
+        setPredictionData,
+        clearPredictionData,
+        generateReport,
+        downloadReport,
+        openModal,
+        closeModal
+    };
+});
+    </script>
+</body>
+</html>

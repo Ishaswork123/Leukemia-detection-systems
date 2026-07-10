@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+uploads/*
+!uploads/.gitkeep
+static/images/heatmap_*.jpg
+.venv/
+venv/
