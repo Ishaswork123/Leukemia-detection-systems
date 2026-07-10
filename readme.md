@@ -23,7 +23,7 @@ Upload a blood smear image → get a subtype prediction, a Grad-CAM attention ma
 <!-- 🎬 PLACEHOLDER: animated GIF of the app in action -->
 <img src="docs/assets/demo.gif" alt="LeukoScan Demo" width="800"/>
 
-[▶️ Watch Loom Demo](https://www.loom.com/share/your-demo-link) &nbsp;•&nbsp; [🌐 Live Demo](https://leukoscan.vercel.app) &nbsp;•&nbsp; [📄 Sample Report](docs/assets/sample_report.pdf) &nbsp;•&nbsp; [🐛 Report Bug](https://github.com/your-username/leukoscan/issues) &nbsp;•&nbsp; [✨ Request Feature](https://github.com/your-username/leukoscan/issues)
+[▶️ Watch Loom Demo](https://www.loom.com/share/your-demo-link) &nbsp;•&nbsp; [📄 Sample Report](docs/assets/sample_report.pdf) &nbsp;•&nbsp; [🐛 Report Bug](https://github.com/your-username/leukoscan/issues) &nbsp;•&nbsp; [✨ Request Feature](https://github.com/Ishaswork123/Leukemia-dettection-system)
 
 </div>
 
