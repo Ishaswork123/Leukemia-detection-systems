@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- 🖼️ PLACEHOLDER: replace with your logo — e.g. docs/assets/logo.png -->
-<img src="docs/assets/logo.png" alt="LeukoScan Logo" width="140"/>
+
 
 # 🧬 LeukoScan
 ### AI-Powered Leukemia Subtype Detection from Blood Smear Images
@@ -112,26 +112,15 @@ Upload a blood smear image → get a subtype prediction, a Grad-CAM attention ma
 <summary><strong>Click to expand / collapse gallery</strong></summary>
 
 <br>
+<img src="dashboard.jpeg" width="800" alt="Homepage">
 
-**Homepage & Upload**
-<!-- PLACEHOLDER: docs/assets/screenshot-home.png -->
-<img src="\static\images\dashboard.jpeg" width="800"/>
+<img src="report.jpeg" width="800" alt="Prediction Result">
 
-**Prediction Result**
-<!-- PLACEHOLDER: docs/assets/screenshot-prediction.png -->
-<img src="\static\images\report.jpeg" width="800"/>
+<img src="gradcam.jpeg" width="800" alt="Grad-CAM">
 
-**Grad-CAM Visualization**
-<!-- PLACEHOLDER: docs/assets/screenshot-gradcam.png -->
-<img src="\static\images\gradcam.jpeg" width="800"/>
+<img src="ai_report.jpeg" width="800" alt="PDF Report">
 
-**Generated PDF Report**
-<!-- PLACEHOLDER: docs/assets/screenshot-report.png -->
-<img src="\static\images\ai_report.jpeg" width="800"/>
-
-**Medical Chatbot**
-<!-- PLACEHOLDER: docs/assets/screenshot-chatbot.png -->
-<img src="\static\images\chatbot.jpeg" width="800"/>
+<img src="chatbot.jpeg" width="800" alt="Medical Chatbot">
 
 </details>
 
