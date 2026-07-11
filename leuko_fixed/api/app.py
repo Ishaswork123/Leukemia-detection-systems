@@ -40,6 +40,9 @@ from groq_summary import generate_ai_summary
 # ---------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
 
 # Correctly point to the .env file one folder up
 script_dir = Path(__file__).resolve().parent
