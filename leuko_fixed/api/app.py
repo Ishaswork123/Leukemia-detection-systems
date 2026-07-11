@@ -2,7 +2,7 @@ import os
 
 # Force legacy Keras 2 behavior for compatibility with this .h5 model
 # and the Grad-CAM code below. Must be set before tensorflow is imported.
-os.environ.setdefault("TF_USE_LEGACY_KERAS", "1")
+# os.environ.setdefault("TF_USE_LEGACY_KERAS", "1")
 from dotenv import load_dotenv
 import time
 import cv2
